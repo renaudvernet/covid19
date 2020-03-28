@@ -17,6 +17,7 @@ url = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/web-data/data/c
 data = {}
 counter = -1
 previous_country=""
+time_limit_days = 30
 
 
 ######################
@@ -88,7 +89,24 @@ deaths_start_10 = {}
 
 
 # SPECIFY THE COUNTRIES YOU WANT
-countries = ('France', 'Italy', 'US', 'Germany', 'Netherlands', 'China', 'Spain', 'Japan', 'United Kingdom', 'Switzerland')
+countries = {
+    'France' : 65.27,
+    'Italy' : 60.46,
+    'US' : 331,
+    'Germany' : 83.78,
+    'Netherlands' : 17.13,
+    'China' : 1439,
+    'Spain' : 46.75,
+    # 'Japan' : 126.48,
+    'United Kingdom' : 67.89 ,
+    # 'South Korea' : 51.27,
+    'Iran': 83.99,
+    'Belgium' : 11.59,
+    # 'Switzerland' : 8.65,
+    # 'Sweden': 10.1,
+}
+
+
 
 # PREPARE PLOT AXIS
 plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%d-%m'))
@@ -97,14 +115,14 @@ plt.gca().xaxis.set_minor_locator(mdates.DayLocator())
 
 
 # PLOT THE DEATHS PROFILE
-for country in countries :
+for country in countries.keys() :
     deaths[country] = data[country][1]
-
     plt.plot(x, deaths[country], label=country)
-    plt.gca().yaxis.set_label_text('deaths')
-    plt.yscale('log')
-    plt.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc='lower left', ncol=2, mode="expand", borderaxespad=0.)
-    plt.gcf().autofmt_xdate()
+
+plt.gca().yaxis.set_label_text('deaths')
+plt.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc='lower left', ncol=2, mode="expand", borderaxespad=0.)
+# plt.yscale('log')
+plt.gcf().autofmt_xdate()
 plt.savefig('deaths.png',bbox_inches='tight' )
 plt.clf()
 
@@ -112,11 +130,15 @@ plt.clf()
 # PLOT THE INCREMENTAL DEATH PROFILE
 for country in countries :
     deaths_incremental[country] = data[country][2]
-
     plt.plot(x, deaths_incremental[country], label=country)
-    plt.gca().yaxis.set_label_text('increment death')
-    plt.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc='lower left', ncol=2, mode="expand", borderaxespad=0.)
-    plt.gcf().autofmt_xdate()
+
+plt.gca().yaxis.set_label_text('increment death')
+plt.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc='lower left', ncol=2, mode="expand", borderaxespad=0.)
+# plt.yscale('log')
+plt.gcf().autofmt_xdate()
+plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%d-%m'))
+plt.gca().xaxis.set_major_locator(mdates.DayLocator(interval=7))
+plt.gca().xaxis.set_minor_locator(mdates.DayLocator())
 plt.savefig('increment_death.png',bbox_inches='tight' )
 plt.clf()
 
@@ -133,14 +155,38 @@ for country in countries :
             new_list.append(original_list[index])
 
     shifted_x = list(range(len(new_list)))
-
-
     plt.plot(shifted_x, new_list, label=country)
-    plt.gca().yaxis.set_label_text('deaths from 10th victim')
-    plt.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc='lower left', ncol=2, mode="expand", borderaxespad=0.)
-    plt.yscale('log')
-    plt.gcf().autofmt_xdate()
+
+plt.gca().yaxis.set_label_text('deaths from 10th victim')
+plt.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc='lower left', ncol=2, mode="expand", borderaxespad=0.)
+# plt.yscale('log')
+plt.gcf().autofmt_xdate()
+# plt.axes().set_xlim(0, time_limit_days)
 plt.savefig('death_start_10.png',bbox_inches='tight' )
 plt.clf()
+
+# PLOT THE DEATH PROFILE starting on 10th dead (normalized to population)
+for country in countries :
+    original_list = data[country][1]
+    new_list = []
+    found = False
+    for index in range(0, len(original_list)):
+        value = original_list[index]
+        if value >= 10:
+            found = True
+        if found:
+            new_list.append(original_list[index]/countries[country])
+
+    shifted_x = list(range(len(new_list)))
+    plt.plot(shifted_x, new_list, label=country)
+
+plt.gca().yaxis.set_label_text('deaths from 10th victim (normalized to population)')
+plt.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc='lower left', ncol=2, mode="expand", borderaxespad=0.)
+# plt.yscale('log')
+# plt.gcf().autofmt_xdate()
+# plt.axes().set_xlim(0, time_limit_days)
+plt.savefig('death_start_10_normalized.png',bbox_inches='tight' )
+plt.clf()
+
 
 # FINISH
