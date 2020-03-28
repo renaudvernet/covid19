@@ -136,7 +136,7 @@ for country in countries :
 
 
     plt.plot(shifted_x, new_list, label=country)
-    plt.gca().yaxis.set_label_text('increment death')
+    plt.gca().yaxis.set_label_text('deaths from 10th victim')
     plt.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc='lower left', ncol=2, mode="expand", borderaxespad=0.)
     plt.yscale('log')
     plt.gcf().autofmt_xdate()
