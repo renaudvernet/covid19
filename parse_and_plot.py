@@ -84,6 +84,7 @@ x = [datetime.strptime(d,'%m/%d/%y').date() for d in data['France'][0]]
 # Y axis (sevral)
 deaths = {}
 deaths_incremental = {}
+deaths_start_10 = {}
 
 
 # SPECIFY THE COUNTRIES YOU WANT
@@ -119,5 +120,27 @@ for country in countries :
 plt.savefig('increment_death.png',bbox_inches='tight' )
 plt.clf()
 
+# PLOT THE DEATH PROFILE starting on 10th dead
+for country in countries :
+    original_list = data[country][1]
+    new_list = []
+    found = False
+    for index in range(0, len(original_list)):
+        value = original_list[index]
+        if value >= 10:
+            found = True
+        if found:
+            new_list.append(original_list[index])
+
+    shifted_x = list(range(len(new_list)))
+
+
+    plt.plot(shifted_x, new_list, label=country)
+    plt.gca().yaxis.set_label_text('increment death')
+    plt.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc='lower left', ncol=2, mode="expand", borderaxespad=0.)
+    plt.yscale('log')
+    plt.gcf().autofmt_xdate()
+plt.savefig('death_start_10.png',bbox_inches='tight' )
+plt.clf()
 
 # FINISH
