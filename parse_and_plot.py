@@ -160,7 +160,7 @@ def assign_data(plot_type, raw_data) :
                 if found:
                     if plot_type == 'deaths_start_10' :
                         new_list.append(original_list[index])
-                    elif plot_type == 'deaths_start_10' :
+                    elif plot_type == 'deaths_start_10_normalized' :
                         new_list.append(original_list[index]/countries[country])
                     else :
                         print 'error'
