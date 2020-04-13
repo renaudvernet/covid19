@@ -24,22 +24,32 @@ time_limit_days = 30
 
 plot_config = {
     'deaths' : {
-        'logscale': False,
+        'logscale': 0,
         'ytitle': 'number of deaths',
         'isdate': True
     } ,
     'deaths_incremental' : {
-        'logscale': False,
+        'logscale': 0,
         'ytitle': 'daily incremental deaths',
         'isdate': True
     } ,
     'deaths_start_10' : {
-        'logscale': False,
+        'logscale': 0,
         'ytitle': 'number of deaths since #10',
         'isdate': False
     } ,
+    'deaths_start_100' : {
+        'logscale': 0,
+        'ytitle': 'number of deaths since #100',
+        'isdate': False
+    } ,
+    'deaths_start_1000' : {
+        'logscale': 0,
+        'ytitle': 'number of deaths since #1000',
+        'isdate': False
+    } ,
     'deaths_start_10_normalized' : {
-        'logscale': False,
+        'logscale': 0,
         'ytitle': 'number of deaths since #10 (normalized)',
         'isdate': False
     } ,
@@ -55,8 +65,8 @@ countries = {
     'Netherlands' : 17.13,
     'China' : 1439,
     'Spain' : 46.75,
-    # 'Japan' : 126.48,
-    # 'United Kingdom' : 67.89 ,
+    'Japan' : 126.48,
+     'United Kingdom' : 67.89 ,
     # 'South Korea' : 51.27,
     'Iran': 83.99,
     'Belgium' : 11.59,
@@ -101,12 +111,19 @@ for line in input:
     if country not in countries.keys():
         continue
 
+    # remove USA individual states
+    if country == 'US' and fields[11]:
+        continue
+
+
+
     if country != previous_country :
         counter = 0
         previous_country = country
     else :
         counter += 1
 
+    #exception for South Korea strange formatting
     if country == '"Korea':
         country = 'South Korea'
         date = fields[2]
@@ -124,6 +141,7 @@ for line in input:
             recovered = int(fields[4])
         else:
             recovered = 0
+
 
 
     raw_data[country]['x_points'].append(datetime.strptime(date,'%m/%d/%y').date())
@@ -165,6 +183,36 @@ def assign_data(plot_type, raw_data) :
                     else :
                         print 'error'
                         sys.exit(1)
+            shifted_x = list(range(len(new_list)))
+
+            data[plot_type][country]['x_points'] = shifted_x
+            data[plot_type][country]['y_points'] = new_list
+    elif plot_type == 'deaths_start_100' :
+        for country in countries.keys():
+            original_list = raw_data[country]['y_points']['dead']
+            new_list = []
+            found = False
+            for index in range(0, len(original_list)):
+                value = original_list[index]
+                if value >= 100:
+                    found = True
+                if found:
+                    new_list.append(original_list[index])
+            shifted_x = list(range(len(new_list)))
+
+            data[plot_type][country]['x_points'] = shifted_x
+            data[plot_type][country]['y_points'] = new_list
+    elif plot_type == 'deaths_start_1000' :
+        for country in countries.keys():
+            original_list = raw_data[country]['y_points']['dead']
+            new_list = []
+            found = False
+            for index in range(0, len(original_list)):
+                value = original_list[index]
+                if value >= 1000:
+                    found = True
+                if found:
+                    new_list.append(original_list[index])
             shifted_x = list(range(len(new_list)))
 
             data[plot_type][country]['x_points'] = shifted_x
