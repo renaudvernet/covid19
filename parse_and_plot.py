@@ -111,12 +111,19 @@ for line in input:
     if country not in countries.keys():
         continue
 
+    # remove USA individual states
+    if country == 'US' and fields[11]:
+        continue
+
+
+
     if country != previous_country :
         counter = 0
         previous_country = country
     else :
         counter += 1
 
+    #exception for South Korea strange formatting
     if country == '"Korea':
         country = 'South Korea'
         date = fields[2]
@@ -134,6 +141,7 @@ for line in input:
             recovered = int(fields[4])
         else:
             recovered = 0
+
 
 
     raw_data[country]['x_points'].append(datetime.strptime(date,'%m/%d/%y').date())
