@@ -23,6 +23,11 @@ previous_country=""
 time_limit_days = 30
 
 plot_config = {
+    'confirmed' : {
+        'logscale': 0,
+        'ytitle': 'confirmed cases',
+        'isdate': True
+    } ,
     'deaths' : {
         'logscale': 0,
         'ytitle': 'number of deaths',
@@ -62,16 +67,16 @@ countries = {
     'Italy' : 60.46,
     'US' : 331,
     'Germany' : 83.78,
-    'Netherlands' : 17.13,
+    #'Netherlands' : 17.13,
     'China' : 1439,
     'Spain' : 46.75,
     'Japan' : 126.48,
-     'United Kingdom' : 67.89 ,
-    # 'South Korea' : 51.27,
-    'Iran': 83.99,
+    'United Kingdom' : 67.89 ,
+    #'South Korea' : 51.27,
+    #'Iran': 83.99,
     'Belgium' : 11.59,
-    # 'Switzerland' : 8.65,
-    # 'Sweden': 10.1,
+    #'Switzerland' : 8.65,
+    'Sweden': 10.1,
 }
 
 for plot_type in plot_config.keys() :
@@ -157,6 +162,10 @@ def assign_data(plot_type, raw_data) :
         for country in countries.keys():
             data[plot_type][country]['x_points'] = raw_data[country]['x_points']
             data[plot_type][country]['y_points'] = copy.copy(raw_data[country]['y_points']['dead'])
+    elif plot_type == 'confirmed':
+        for country in countries.keys():
+            data[plot_type][country]['x_points'] = raw_data[country]['x_points']
+            data[plot_type][country]['y_points'] = copy.copy(raw_data[country]['y_points']['confirmed'])
     elif plot_type == 'deaths_incremental':
         for country in countries.keys():
             data[plot_type][country]['x_points'] = raw_data[country]['x_points']
