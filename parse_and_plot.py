@@ -35,7 +35,7 @@ plot_config = {
     } ,
     'deaths_incremental' : {
         'logscale': 0,
-        'ytitle': 'daily incremental deaths',
+        'ytitle': 'daily deaths',
         'isdate': True
     } ,
     'deaths_start_10' : {
@@ -55,7 +55,12 @@ plot_config = {
     } ,
     'deaths_start_10_normalized' : {
         'logscale': 0,
-        'ytitle': 'number of deaths since #10 (normalized)',
+        'ytitle': 'number of deaths since #10 / population',
+        'isdate': False
+    } ,
+    'confirmed_start_1000' : {
+        'logscale': 0,
+        'ytitle': 'number of confirmed since #1000',
         'isdate': False
     } ,
 }
@@ -214,6 +219,21 @@ def assign_data(plot_type, raw_data) :
     elif plot_type == 'deaths_start_1000' :
         for country in countries.keys():
             original_list = raw_data[country]['y_points']['dead']
+            new_list = []
+            found = False
+            for index in range(0, len(original_list)):
+                value = original_list[index]
+                if value >= 1000:
+                    found = True
+                if found:
+                    new_list.append(original_list[index])
+            shifted_x = list(range(len(new_list)))
+
+            data[plot_type][country]['x_points'] = shifted_x
+            data[plot_type][country]['y_points'] = new_list
+    elif plot_type == 'confirmed_start_1000' :
+        for country in countries.keys():
+            original_list = raw_data[country]['y_points']['confirmed']
             new_list = []
             found = False
             for index in range(0, len(original_list)):
