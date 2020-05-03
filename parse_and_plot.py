@@ -72,10 +72,10 @@ countries = {
     'Italy' : 60.46,
     'US' : 331,
     'Germany' : 83.78,
-    #'Netherlands' : 17.13,
-    'China' : 1439,
+    'Netherlands' : 17.13,
+    #'China' : 1439,
     'Spain' : 46.75,
-    'Japan' : 126.48,
+    #'Japan' : 126.48,
     'United Kingdom' : 67.89 ,
     #'South Korea' : 51.27,
     #'Iran': 83.99,
@@ -134,25 +134,23 @@ for line in input:
         counter += 1
 
     #exception for South Korea strange formatting
+    position = 1
+
     if country == '"Korea':
         country = 'South Korea'
-        date = fields[2]
-        confirmed = int(fields[3])
-        dead = int(fields[4])
-        if fields[5]:
-            recovered = int(fields[5])
-        else:
-            recovered = 0
-    else :
-        date = fields[1]
-        confirmed = int(fields[2])
-        dead = int(fields[3])
-        if fields[4]:
-            recovered = int(fields[4])
-        else:
-            recovered = 0
+        position = 2
 
+    date = fields[position]
 
+    if fields[position+1]:
+        confirmed = int(fields[position+1])
+    else:
+        confirmed = 0
+    dead = int(fields[position+2])
+    if fields[position+3]:
+        recovered = int(fields[position+3])
+    else:
+        recovered = 0
 
     raw_data[country]['x_points'].append(datetime.strptime(date,'%m/%d/%y').date())
     raw_data[country]['y_points']['confirmed'].append(confirmed)
